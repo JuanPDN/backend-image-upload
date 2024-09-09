@@ -3,7 +3,7 @@ import {
   ParseFilePipe, Post, UploadedFile, UseInterceptors
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import multer, { diskStorage } from 'multer';
+import { diskStorage } from 'multer';
 
 
 @Controller()
@@ -15,7 +15,7 @@ export class AppController {
     storage: diskStorage({
       destination: './uploads',
       filename: (_, file, cb) => {
-        cb(null, file.originalname);
+        cb(null, new Date().getTime() + "_" + file.originalname);
       }
     })
   }))
