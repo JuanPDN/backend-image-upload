@@ -4,11 +4,11 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-
+import { FileService } from './file/file.service';
 
 @Controller()
 export class AppController {
-  constructor() { }
+  constructor(private readonly fileService: FileService) { }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', {
@@ -27,6 +27,13 @@ export class AppController {
       ]
     })
   ) file: Express.Multer.File) {
-    console.log(file);
+    return this.fileService.createFile(
+      {
+        name: file.filename,
+        path: file.path
+      }
+    )
   }
 }
+
+
