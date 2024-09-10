@@ -1,10 +1,8 @@
-import {
-  Controller, FileTypeValidator, MaxFileSizeValidator,
-  ParseFilePipe, Post, UploadedFile, UseInterceptors
-} from '@nestjs/common';
+import { Controller, ParseFilePipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
+
 import { FileService } from './file/file.service';
+import { storage, fileFilter, fileValidator } from './helpers/file.helper';
 
 @Controller()
 export class AppController {
@@ -12,24 +10,16 @@ export class AppController {
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploads',
-      filename: (_, file, cb) => {
-        cb(null, new Date().getTime() + "_" + file.originalname);
-      }
-    })
+    fileFilter: fileFilter,
+    storage: storage
   }))
   uploadFile(@UploadedFile(
-    new ParseFilePipe({
-      validators: [
-        new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 2 }),
-        new FileTypeValidator({ fileType: "image/*" })
-      ]
-    })
+    new ParseFilePipe({ validators: fileValidator })
   ) file: Express.Multer.File) {
-    return this.fileService.createFile(
+
+    file && this.fileService.createFile(
       {
-        name: file.filename,
+        name: file.originalname,
         path: file.path
       }
     )
