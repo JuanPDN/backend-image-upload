@@ -24,6 +24,7 @@ export class AppController {
         path: file.path
       }
     )
+    return { message: "File uploaded successfully" }
   }
 
   @Get("/:id")
@@ -32,10 +33,7 @@ export class AppController {
     if (!data) {
       return { message: `File  with id ${id} not found` }
     }
-    return {
-      ...data,
-      path: join(__dirname, "..", data.path)
-    }
+    return data
   }
 }
 
