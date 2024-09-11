@@ -14,17 +14,17 @@ export class AppController {
     fileFilter: fileFilter,
     storage: storage
   }))
-  uploadFile(@UploadedFile(
+  async uploadFile(@UploadedFile(
     new ParseFilePipe({ validators: fileValidator })
   ) file: Express.Multer.File) {
 
-    file && this.fileService.createFile(
+    const newFile = await this.fileService.createFile(
       {
         name: file.originalname,
         path: file.path
       }
     )
-    return { message: "File uploaded successfully" }
+    return { message: "File uploaded successfully", id: newFile.id }
   }
 
   @Get("/:id")
