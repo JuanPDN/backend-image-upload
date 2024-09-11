@@ -9,4 +9,9 @@ export class FileService {
     async createFile(data: Prisma.FileCreateInput): Promise<File> {
         return this.prisma.file.create({ data })
     }
+
+    async getFileById(fileWhereUniqueInput: Prisma.FileWhereUniqueInput)
+        : Promise<File | null> {
+        return this.prisma.file.findUnique({ where: fileWhereUniqueInput })
+    }
 }
