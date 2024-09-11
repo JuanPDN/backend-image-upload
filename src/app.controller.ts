@@ -1,14 +1,15 @@
-import { Controller, ParseFilePipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, ParseFilePipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { FileService } from './file/file.service';
 import { storage, fileFilter, fileValidator } from './helpers/file.helper';
+import { join } from 'path';
 
-@Controller()
+@Controller('upload')
 export class AppController {
   constructor(private readonly fileService: FileService) { }
 
-  @Post('upload')
+  @Post()
   @UseInterceptors(FileInterceptor('file', {
     fileFilter: fileFilter,
     storage: storage
@@ -23,6 +24,18 @@ export class AppController {
         path: file.path
       }
     )
+  }
+
+  @Get("/:id")
+  async getFileById(@Param("id") id: string) {
+    const data = await this.fileService.getFileById({ id: Number(id) });
+    if (!data) {
+      return { message: `File  with id ${id} not found` }
+    }
+    return {
+      ...data,
+      path: join(__dirname, "..", data.path)
+    }
   }
 }
 
