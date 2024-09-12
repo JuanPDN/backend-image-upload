@@ -4,7 +4,7 @@ import { Response } from 'express';
 
 import { FileService } from './file/file.service';
 import { storage, fileFilter, fileValidator } from './helpers/file.helper';
-import { join } from 'path';
+
 
 @Controller()
 export class AppController {
@@ -39,8 +39,6 @@ export class AppController {
 
   @Get("download/:filename")
   async downloadFile(@Param("filename") filename: string, @Res() res: Response) {
-    const filePath = join(process.cwd(), './uploads/' + filename);
-    res.set('Content-Disposition', 'attachment; filename=' + filename);
-    res.sendFile(filePath)
+    res.download('./uploads/' + filename)
   }
 }
