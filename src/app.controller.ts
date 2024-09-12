@@ -1,15 +1,16 @@
-import { Controller, Get, Param, ParseFilePipe, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Param, ParseFilePipe, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 
 import { FileService } from './file/file.service';
 import { storage, fileFilter, fileValidator } from './helpers/file.helper';
 import { join } from 'path';
 
-@Controller('upload')
+@Controller()
 export class AppController {
   constructor(private readonly fileService: FileService) { }
 
-  @Post()
+  @Post('upload')
   @UseInterceptors(FileInterceptor('file', {
     fileFilter: fileFilter,
     storage: storage
@@ -20,14 +21,14 @@ export class AppController {
 
     const newFile = await this.fileService.createFile(
       {
-        name: file.originalname,
+        name: file.filename,
         path: file.path
       }
     )
     return { message: "File uploaded successfully", id: newFile.id }
   }
 
-  @Get("/:id")
+  @Get("upload/:id")
   async getFileById(@Param("id") id: string) {
     const data = await this.fileService.getFileById({ id: Number(id) });
     if (!data) {
@@ -35,6 +36,11 @@ export class AppController {
     }
     return data
   }
+
+  @Get("download/:filename")
+  async downloadFile(@Param("filename") filename: string, @Res() res: Response) {
+    const filePath = join(process.cwd(), './uploads/' + filename);
+    res.set('Content-Disposition', 'attachment; filename=' + filename);
+    res.sendFile(filePath)
+  }
 }
-
-
