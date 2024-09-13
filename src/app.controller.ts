@@ -4,11 +4,13 @@ import { Response } from 'express';
 
 import { FileService } from './file/file.service';
 import { storage, fileFilter, fileValidator } from './helpers/file.helper';
+import { ConfigService } from '@nestjs/config';
 
 
 @Controller()
 export class AppController {
-  constructor(private readonly fileService: FileService) { }
+  constructor(private readonly fileService: FileService,
+    private readonly configService: ConfigService) { }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', {
