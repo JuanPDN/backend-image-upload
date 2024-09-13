@@ -1,0 +1,14 @@
+#node modules
+node_modules/
+
+#environments
+.env
+.env.template
+
+#sistem
+.DS_STORE
+
+#others
+pnpm-lock.yaml
+dist/
+.vscode/
