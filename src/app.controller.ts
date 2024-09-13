@@ -13,7 +13,8 @@ export class AppController {
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', {
     fileFilter: fileFilter,
-    storage: storage
+    storage: storage,
+    limits: { fileSize: 1024 * 1024 * 2 },
   }))
   async uploadFile(@UploadedFile(
     new ParseFilePipe({ validators: fileValidator })
