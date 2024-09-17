@@ -8,7 +8,7 @@ async function bootstrap() {
   const config = app.get(ConfigService);
   const port = config.get('port');
 
-  app.enableCors({ origin: "http://localhost:3000" });
+  app.enableCors({ origin: "https://simple-image-uploader-jp.vercel.app" });
   await app.listen(port);
   Logger.log(`Application listening on port ${port}`);
 }
