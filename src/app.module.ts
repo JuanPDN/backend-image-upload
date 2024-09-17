@@ -7,6 +7,7 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { PrismaService } from './prisma/prisma.service';
 import { FileService } from './file/file.service';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -15,6 +16,7 @@ import configuration from './config/configuration';
     serveRoot: '/uploads'
   }),
   ConfigModule.forRoot({ load: [configuration] }),
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [PrismaService, FileService],

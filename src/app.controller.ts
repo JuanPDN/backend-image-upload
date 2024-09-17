@@ -3,29 +3,28 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 
 import { FileService } from './file/file.service';
-import { storage, fileFilter, fileValidator } from './helpers/file.helper';
-import { ConfigService } from '@nestjs/config';
+import { fileFilter, fileValidator } from './helpers/file.helper';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
 
 
 @Controller()
 export class AppController {
   constructor(private readonly fileService: FileService,
-    private readonly configService: ConfigService) { }
+    private readonly cloudinaryService: CloudinaryService) { }
 
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', {
     fileFilter: fileFilter,
-    storage: storage,
     limits: { fileSize: 1024 * 1024 * 2 },
   }))
   async uploadFile(@UploadedFile(
     new ParseFilePipe({ validators: fileValidator })
   ) file: Express.Multer.File) {
 
+    const data = await this.cloudinaryService.uploadFile(file)
     const newFile = await this.fileService.createFile(
       {
-        name: file.filename,
-        path: file.path
+        name: data.display_name, path: data.url
       }
     )
     return { message: "File uploaded successfully", id: newFile.id }
@@ -42,6 +41,13 @@ export class AppController {
 
   @Get("download/:filename")
   async downloadFile(@Param("filename") filename: string, @Res() res: Response) {
-    res.download('./uploads/' + filename)
+
+    const file = await this.fileService.getFileByName({ name: filename })
+    if (!file || !file.path) return res.send({ message: "File not found" });
+
+    const fileUrl = this.cloudinaryService.getImageAttachment(file.name)
+
+    res.redirect(fileUrl)
+
   }
 }
