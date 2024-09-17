@@ -14,4 +14,11 @@ export class FileService {
         : Promise<File | null> {
         return this.prisma.file.findUnique({ where: fileWhereUniqueInput })
     }
+
+    async getFileByName(fileWhereInput: Prisma.FileWhereInput) {
+        const file = await this.prisma.file.findFirst({
+            where: fileWhereInput
+        })
+        return file
+    }
 }
