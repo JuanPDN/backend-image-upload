@@ -1,0 +1,16 @@
+name: unfrezze server
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  petition:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: HTTP request
+        run: |
+          curl -X GET "https://backend-image-upload-59qx.onrender.com"
