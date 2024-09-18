@@ -2,7 +2,7 @@ name: unfrezze server
 
 on:
   schedule:
-    - cron: '*/14 * * * *'
+    - cron: '*/12 * * * *'
   workflow_dispatch:
 
 jobs:
