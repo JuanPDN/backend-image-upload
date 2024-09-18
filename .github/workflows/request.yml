@@ -1,9 +1,9 @@
 name: unfrezze server
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '*/12 * * * *'
-  workflow_dispatch:
 
 jobs:
   petition:
